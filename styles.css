@@ -1,3 +1,68 @@
-h1 {
-  color: red;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(180deg, #222, #444, black);
+  min-width: 20rem;
+  --sub-title-padding: 0.8rem;
+}
+
+.title {
+  font-family: cursive, sans-serif;
+}
+
+.title .main-title {
+  animation: glow 1.4s ease-in-out 0.7s infinite alternate none;
+  text-align: center;
+  font-size: 1.6rem;
+  padding: 8px 0;
+  color: #fff;
+}
+
+.title .sub-title {
+  font-size: 0.7rem;
+  text-align: center;
+  position: relative;
+  font-style: italic;
+  padding: var(--sub-title-padding) 0;
+}
+
+.sub-title .non-hovered-title {
+  background: rgba(0, 0, 0, 0.1);
+  position: relative;
+  right: 0;
+  transition: right 1s ease-in-out;
+  color: #ccc;
+}
+
+.sub-title .hovered-title {
+  position: absolute;
+  top: var(--sub-title-padding);
+  left: -100%;
+  background: rgba(0, 0, 0, 0.3);
+  color: #eee;
+  width: 100%;
+  transition: left 1s ease-in-out;
+}
+
+.sub-title:hover .hovered-title {
+  left: 0;
+}
+
+.sub-title:hover .non-hovered-title {
+  right: -100%;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.1),
+      0px 0px 5px rgba(205, 157, 250, 0.2);
+  }
+  to {
+    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2),
+      0px 0px 20px rgba(205, 157, 250, 0.4);
+  }
 }
