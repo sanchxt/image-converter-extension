@@ -17,17 +17,20 @@
       </div>
 
       <section class="input-section">
-        <label for="image-src">Image Source:</label>
-        <select id="image-src">
-          <option value="url">URL</option>
-          <option value="file" selected>File</option>
-        </select>
+        <div class="input">
+          <label for="image-src">Image Source</label>
+          <select id="image-src" class="input-field">
+            <option value="url">URL</option>
+            <option value="file" selected>File</option>
+          </select>
+        </div>
 
-        <div class="url-input">
+        <div class="input">
           <label for="image-url">Image URL</label>
           <input
             type="text"
             id="image-url"
+            class="input-field"
             placeholder="Enter the URL to an image"
           />
         </div>
@@ -82,7 +85,11 @@
         </div>
       </div>
 
-      <button id="convert-btn">Convert & Download</button>
+      <div class="convert">
+        <button id="convert-btn">
+          <span>Convert & Download</span>
+        </button>
+      </div>
 
       <div id="status"></div>
     </main>
