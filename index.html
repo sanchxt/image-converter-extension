@@ -38,12 +38,49 @@
         </div>
       </section>
 
-      <label for="image-format">Convert to:</label>
-      <select id="image-format">
-        <option value="png">PNG</option>
-        <option value="jpg">JPG</option>
-        <option value="webp">WEBP</option>
-      </select>
+      <div class="output">
+        <!-- <label for="image-format">Convert to:</label>
+        <select id="image-format">
+          <option value="png">PNG</option>
+          <option value="jpg">JPG</option>
+          <option value="webp">WEBP</option>
+        </select> -->
+        <label>Image Type:</label>
+        <div class="type-radio-grp">
+          <div class="type-radio-item">
+            <input
+              type="radio"
+              id="png"
+              name="img-format"
+              class="format-radio"
+              checked
+            />
+            <label for="png" class="format-label">PNG</label>
+          </div>
+
+          <div class="type-radio-item">
+            <input
+              type="radio"
+              id="jpg"
+              name="img-format"
+              class="format-radio"
+              checked
+            />
+            <label for="jpg" class="format-label">JPG</label>
+          </div>
+
+          <div class="type-radio-item">
+            <input
+              type="radio"
+              id="webp"
+              name="img-format"
+              class="format-radio"
+              checked
+            />
+            <label for="webp" class="format-label">WEBP</label>
+          </div>
+        </div>
+      </div>
 
       <button id="convert-btn">Convert & Download</button>
 
