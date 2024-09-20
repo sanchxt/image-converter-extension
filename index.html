@@ -22,11 +22,11 @@
           <label for="image-src">Image Source</label>
           <select id="image-src" class="input-field">
             <option value="url">URL</option>
-            <option value="file" selected>File</option>
+            <option value="file">File</option>
           </select>
         </div>
 
-        <div class="input">
+        <div class="input" id="url-input">
           <label for="image-url">Image URL</label>
           <input
             type="text"
@@ -36,7 +36,7 @@
           />
         </div>
 
-        <div class="file-input" style="display: none">
+        <div class="file-input" id="file-input" style="display: none">
           <label for="image-file">Import Image:</label>
           <input type="file" id="image-file" accept="image/*" />
         </div>
@@ -95,4 +95,5 @@
       <div id="status"></div>
     </main>
   </body>
+  <script src="script.js"></script>
 </html>
