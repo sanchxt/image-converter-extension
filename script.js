@@ -29,14 +29,14 @@ document.addEventListener("DOMContentLoaded", () => {
         statusDiv.textContent = "Please enter an image URL";
         return;
       }
-      // TODO: convert & download image
+      convertAndDownload(imageUrl, format, "url");
     } else {
       const imageFile = imageFileInput.files[0];
       if (!imageFile) {
         statusDiv.textContent = "Please select an image file";
         return;
       }
-      // TODO: convert & download image
+      convertAndDownload(imageUrl, format, "file");
     }
   });
 
