@@ -61,6 +61,38 @@ document.addEventListener("DOMContentLoaded", () => {
         img.onload = resolve;
       });
 
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+
+      let mimeType;
+      switch (format) {
+        case "png":
+          mimeType = "image/png";
+          break;
+        case "jpg":
+          mimeType = "image/jpeg";
+          break;
+        case "webp":
+          mimeType = "image/webp";
+          break;
+      }
+
+      const convertedBlob = await new Promise((resolve) => {
+        canvas.toBlob(resolve, mimeType);
+      });
+
+      const downloadUrl = URL.createObjectURL(convertedBlob);
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = `ImageConverter.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      statusDiv.textContent = "Successfully converted!";
     } catch (error) {
       statusDiv.textContent = "Error: " + error.message;
     }
