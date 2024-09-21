@@ -7,13 +7,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const imageFileInput = document.getElementById("image-file");
   const statusDiv = document.getElementById("status");
 
+  imageFileInput.addEventListener("change", () => {
+    const fileName = imageFileInput.files[0].name;
+    document.getElementById("file-name").textContent = fileName;
+  });
+
   imageSourceSelect.addEventListener("change", () => {
     if (imageSourceSelect.value === "url") {
       urlInputDiv.style.display = "block";
       fileInputDiv.style.display = "none";
     } else {
       urlInputDiv.style.display = "none";
-      fileInputDiv.style.display = "block";
+      fileInputDiv.style.display = "flex";
     }
   });
 
@@ -36,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         statusDiv.textContent = "Please select an image file";
         return;
       }
-      convertAndDownload(imageUrl, format, "file");
+      convertAndDownload(imageFile, format, "file");
     }
   });
 
