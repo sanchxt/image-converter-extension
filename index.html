@@ -3,31 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Convert and download images in different formats (PNG, JPG, WEBP)."
+    />
     <title>Image Converter</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="theme">
-      <button id="theme-btn">
-        <span id="dark-text">Dark</span>
-        <span>|</span>
-        <span id="light-text">Light</span>
-      </button>
-    </div>
+    <header>
+      <div class="theme">
+        <button
+          id="theme-btn"
+          aria-label="Toggle between dark and light theme."
+        >
+          <span id="dark-text">Dark</span>
+          <span>|</span>
+          <span id="light-text">Light</span>
+        </button>
+      </div>
+    </header>
 
     <main class="container">
-      <div class="title">
+      <section class="title">
         <h1 class="main-title">Image Converter</h1>
         <div class="sub-title">
           <h2 class="non-hovered-title">Unlimited Conversions</h2>
           <h2 class="hovered-title">For Free</h2>
         </div>
-      </div>
+      </section>
 
       <section class="input-section">
         <div class="input">
           <label for="image-src">Image Source</label>
-          <select id="image-src" class="input-field">
+          <select
+            id="image-src"
+            class="input-field"
+            aria-label="Select image source (URL, or from your device)"
+          >
             <option value="file">File</option>
             <option value="url">URL</option>
           </select>
@@ -40,11 +53,17 @@
             id="image-url"
             class="input-field"
             placeholder="Enter the URL to an image"
+            aria-required="true"
           />
         </div>
 
         <div class="file-input" id="file-input">
-          <label for="image-file" class="image-btn">Import Image</label>
+          <label
+            for="image-file"
+            class="image-btn"
+            aria-label="Import an image from your device"
+            >Import Image</label
+          >
           <input
             type="file"
             id="image-file"
@@ -56,13 +75,7 @@
         </div>
       </section>
 
-      <div class="output">
-        <!-- <label for="image-format">Convert to:</label>
-        <select id="image-format">
-          <option value="png">PNG</option>
-          <option value="jpg">JPG</option>
-          <option value="webp">WEBP</option>
-        </select> -->
+      <section class="output">
         <label>Image Type:</label>
         <div class="type-radio-grp">
           <div class="type-radio-item">
@@ -98,16 +111,20 @@
             <label for="webp" class="format-label">WEBP</label>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="convert">
-        <button id="convert-btn">
+      <section class="convert">
+        <button
+          id="convert-btn"
+          aria-label="Convert and download the image as the selected type"
+        >
           <span>Convert & Download</span>
         </button>
-      </div>
+      </section>
 
-      <p id="status"></p>
+      <p id="status" role="status"></p>
     </main>
   </body>
   <script src="script.js"></script>
+  <script src="theme.js"></script>
 </html>
