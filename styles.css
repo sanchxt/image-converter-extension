@@ -35,25 +35,32 @@
 }
 
 body {
-  background: linear-gradient(180deg, #222, #444, black);
+  background: linear-gradient(
+    180deg,
+    var(--bg-gradient-1),
+    var(--bg-gradient-2),
+    var(--bg-gradient-3)
+  );
   min-width: 20rem;
-  --sub-title-padding: 0.8rem;
+}
 }
 
 .title {
   font-family: Nunito, sans-serif;
 
   & > .main-title {
-    animation: glow 1.4s ease-in-out 0.7s infinite alternate none;
+    animation: glow var(--anim-glow-duration) ease-in-out var(--anim-glow-delay)
+      infinite alternate none;
     text-align: center;
-    font-size: 1.6rem;
-    padding: 8px 0;
-    color: #fff;
+    font-size: var(--text-lg);
+    padding-top: 10px;
+    padding-bottom: 4px;
+    color: var(--primary);
   }
 }
 
 .title > .sub-title {
-  font-size: 0.7rem;
+  font-size: var(--text-xs);
   text-align: center;
   position: relative;
   font-style: italic;
@@ -72,8 +79,8 @@ body {
   background: rgba(0, 0, 0, 0.1);
   position: relative;
   right: 0;
-  transition: right 0.6s ease-in-out;
-  color: #ccc;
+  transition: right var(--sub-title-transition) ease-in-out;
+  color: var(--secondary);
 }
 
 .sub-title > .hovered-title {
@@ -81,9 +88,9 @@ body {
   top: var(--sub-title-padding);
   left: -100%;
   background: rgba(0, 0, 0, 0.3);
-  color: #eee;
+  color: var(--secondary);
   width: 100%;
-  transition: left 0.6s ease-in-out;
+  transition: left var(--sub-title-transition) ease-in-out;
 }
 
 @keyframes glow {
@@ -98,14 +105,14 @@ body {
 }
 
 .input-section {
-  padding: 0 10px;
+  padding: var(--row-padding);
 }
 
 label {
   display: block;
-  color: #ccc;
-  font-size: 1rem;
-  letter-spacing: 1px;
+  color: var(--primary);
+  font-size: var(--text-md);
+  letter-spacing: normal;
   transition: letter-spacing 0.3s ease-in-out;
   text-decoration: none;
   margin: 8px 0;
@@ -116,45 +123,46 @@ label {
   font-style: italic;
 
   &:hover label {
-    letter-spacing: 1.5px;
+    letter-spacing: var(--lg-letter-spacing);
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-thickness: 3px;
-    text-decoration-color: rgba(255, 255, 255, 0.7);
+    text-decoration-color: var(--primary);
   }
 }
 
 .input-field {
   width: 100%;
   border-radius: 0.4rem;
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   padding: 5px;
   border: none;
   box-shadow: none;
   outline: none;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: var(--accent);
   transition: background-color 0.3s ease-in-out;
+  color: var(--primary);
 
   &:focus {
-    background-color: #fff;
+    background-color: var(--accent2);
     box-shadow: none;
     border: none;
     outline-style: dotted;
     outline-width: 1px;
-    outline-color: black;
+    outline-color: var(--contrast);
     outline-offset: -2px;
   }
 }
 
 .output {
   margin: 2rem 0;
-  padding: 0 10px;
+  padding: var(--row-padding);
 }
 
 .type-radio-grp {
   position: relative;
   width: 100%;
-  background-color: #777;
+  background-color: var(--accent2);
   height: 30px;
   display: flex;
   justify-content: space-around;
@@ -176,7 +184,7 @@ label {
   display: none;
 
   &:checked + .format-label {
-    background-color: #092f45;
+    background-color: var(--format);
     color: white;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.5);
     transform: translateY(-2px);
@@ -192,7 +200,7 @@ label {
   transition-duration: 0.5s;
   transition-property: transform, box-shadow;
   transform: none;
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
 }
 
 .convert {
