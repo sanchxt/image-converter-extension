@@ -43,6 +43,18 @@ body {
   );
   min-width: 20rem;
 }
+
+body.light-mode {
+  --bg-gradient-1: #ddd;
+  --bg-gradient-2: #ccc;
+  --bg-gradient-3: #fff;
+
+  --primary: #000;
+  --secondary: #444;
+  --contrast: #fff;
+  --accent: #dbdbd7;
+  --accent2: #f5f5f2;
+  --format: #53b5ed;
 }
 
 .title {
@@ -182,6 +194,10 @@ label {
 .format-radio {
   appearance: none;
   display: none;
+
+  & + .format-label {
+    cursor: pointer;
+  }
 
   &:checked + .format-label {
     background-color: var(--format);
