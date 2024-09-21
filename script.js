@@ -39,4 +39,25 @@ document.addEventListener("DOMContentLoaded", () => {
       // TODO: convert & download image
     }
   });
+
+  async function convertAndDownload(imageSource, format, sourceType) {
+    try {
+      statusDiv.textContent = "Converting..";
+      let img = new Image();
+      if (sourceType === "url") {
+        const response = await fetch(imageSource);
+        const blob = await response.blob();
+        img.src = URL.createObjectURL(blob);
+      } else {
+        img.src = URL.createObjectURL(imageSource);
+      }
+
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+
+    } catch (error) {
+      statusDiv.textContent = "Error: " + error.message;
+    }
+  }
 });
