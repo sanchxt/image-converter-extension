@@ -1,13 +1,13 @@
 #convert-btn {
-  border: 0 solid;
+  border: 0 solid var(--primary);
   background-color: #000;
   color: #fff;
   cursor: pointer;
   font-size: 0.7rem;
   font-weight: 800;
   margin-bottom: 10px;
-  -webkit-mask-image: -webkit-radial-gradient(#000, #fff);
-  mask-image: -webkit-radial-gradient(#000, #fff);
+  -webkit-mask-image: -webkit-radial-gradient(var(--primary), var(--contrast));
+  mask-image: -webkit-radial-gradient(var(--primary), var(--contrast));
   text-transform: uppercase;
   letter-spacing: 1.2px;
   border-radius: 99rem;
@@ -18,7 +18,12 @@
   width: 90%;
 }
 
-#convert-btn span {
+body.light-mode #convert-btn {
+  background-color: #fff;
+  color: #000;
+}
+
+body:not(.light-mode) #convert-btn span {
   mix-blend-mode: difference;
 }
 
@@ -26,11 +31,11 @@
 #convert-btn:before {
   background: linear-gradient(
     90deg,
-    #fff 25%,
+    var(--primary) 25%,
     transparent 0,
     transparent 50%,
-    #fff 0,
-    #fff 75%,
+    var(--primary) 0,
+    var(--primary) 75%,
     transparent 0
   );
   content: "";
@@ -46,16 +51,16 @@
     90deg,
     transparent 0,
     transparent 25%,
-    #fff 0,
-    #fff 50%,
+    var(--primary) 0,
+    var(--primary) 50%,
     transparent 0,
     transparent 75%,
-    #fff 0
+    var(--primary) 0
   );
   z-index: -1;
 }
 
-#convert-btn:hover:after,
-#convert-btn:hover:before {
+body:not(.light-mode) #convert-btn:hover:after,
+body:not(.light-mode) #convert-btn:hover:before {
   --progress: 0;
 }
