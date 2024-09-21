@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+@import url("./convert-button.css");
 
 * {
   padding: 0;
@@ -7,8 +8,30 @@
 }
 
 :root {
-  --line_color: #00135c;
-  --back_color: #defffa;
+  --bg-gradient-1: #222;
+  --bg-gradient-2: #444;
+  --bg-gradient-3: #000;
+
+  --primary: #fff;
+  --secondary: #ccc;
+  --contrast: #000;
+  --accent: #212120;
+  --accent2: #575756;
+  --format: #092f45;
+
+  --sub-title-padding: 0.8rem;
+  --text-lg: 1.6rem;
+  --text-md: 1rem;
+  --text-sm: 0.8rem;
+  --text-xs: 0.7rem;
+
+  --anim-glow-duration: 1.4s;
+  --anim-glow-delay: 0.7s;
+  --sub-title-transition: 0.6s;
+
+  --row-padding: 0 10px;
+
+  --lg-letter-spacing: 1.2px;
 }
 
 body {
