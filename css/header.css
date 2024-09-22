@@ -1,0 +1,38 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 8px;
+
+  & > img {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.theme {
+  padding: var(--row-padding);
+  margin-top: 10px;
+
+  & > #theme-btn {
+    padding: 6px 12px;
+    display: flex;
+    border-radius: 12px;
+    box-shadow: none;
+    border: none;
+    gap: 5px;
+    cursor: pointer;
+    background-color: var(--contrast);
+    color: var(--primary);
+
+    & > span {
+      font-weight: 700;
+      padding: 8px 4px;
+    }
+  }
+}
+
+.selected-theme {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
