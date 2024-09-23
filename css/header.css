@@ -1,11 +1,12 @@
 header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 2px 8px;
 
   & > img {
-    width: 64px;
-    height: 64px;
+    width: 84px;
+    height: 84px;
   }
 }
 
