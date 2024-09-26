@@ -8,6 +8,7 @@ A **chrome extension to import images** either from a URL, or from your device, 
 ---
 ---
 ![alt](https://i.imgur.com/lFiEPJA.png)
+
 This extension's sole purpose is to save your time & increase your productivity as a developer / designer.
 Finding the right image just to notice that it's in the wrong format gets frustrating rather quick, and we always have to search up a website just to convert its format. Other extensions are mostly bloated with extra stuff, making it slow in nature. I aim to remove all those bloat and ADs with this, by making it open-source as well :)
 
