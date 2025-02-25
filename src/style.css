@@ -64,6 +64,26 @@
   --surface-hover: rgba(0, 0, 0, 0.05);
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--accent);
+  border-radius: 14px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brand-400);
+  border-radius: 20px;
+  border: 2px solid var(--surface);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-600);
+}
+
 @layer components {
   /* glass UI base */
   .glass {
