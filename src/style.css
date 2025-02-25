@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-gradient-1: #222;
+  --bg-gradient-2: #444;
+  --bg-gradient-3: #000;
+
+  --primary: #fff;
+  --secondary: #ccc;
+  --contrast: #000;
+  --accent: #212120;
+  --accent2: #575756;
+  --format: #092f45;
+}
+
+.dark {
+  --bg-gradient-1: #222;
+  --bg-gradient-2: #444;
+  --bg-gradient-3: #000;
+
+  --primary: #fff;
+  --secondary: #ccc;
+  --contrast: #000;
+  --accent: #212120;
+  --accent2: #575756;
+  --format: #092f45;
+}
+
+.light {
+  --bg-gradient-1: #ddd;
+  --bg-gradient-2: #ccc;
+  --bg-gradient-3: #fff;
+
+  --primary: #000;
+  --secondary: #444;
+  --contrast: #fff;
+  --accent: #dbdbd7;
+  --accent2: #f5f5f2;
+  --format: #53b5ed;
+}
+
+@layer components {
+  .input-field {
+    @apply w-full rounded-md py-1 px-2 border-none shadow-none outline-none bg-accent transition-colors duration-300 text-primary;
+  }
+
+  .input-field:focus {
+    @apply bg-accent2 outline outline-1 outline-contrast -outline-offset-2;
+  }
+
+  .format-label {
+    @apply w-full text-center rounded-full font-bold transition-transform duration-500 transform-none text-sm cursor-pointer;
+  }
+
+  .format-radio:checked + .format-label {
+    @apply bg-format text-white shadow-md -translate-y-0.5;
+  }
+}
