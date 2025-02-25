@@ -91,6 +91,27 @@ const App: React.FC = () => {
             onSourceChange={handleSourceChange}
           />
 
+          {imageSource === "url" ? (
+            <div className="mb-4">
+              <label
+                htmlFor="image-url"
+                className="block text-primary text-base mb-2 transition-all duration-300 hover:tracking-wider hover:underline hover:decoration-primary hover:underline-offset-3 hover:decoration-2"
+              >
+                Image URL
+              </label>
+              <input
+                type="text"
+                id="image-url"
+                value={url}
+                onChange={handleUrlChange}
+                className="input-field"
+                placeholder="Enter the URL to an image"
+                aria-required="true"
+              />
+            </div>
+          ) : (
+            <ImageDropzone onFilesSelected={handleFilesSelected} />
+          )}
         </section>
 
         <section className="mb-4">
