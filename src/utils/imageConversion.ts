@@ -12,7 +12,7 @@ export const loadImage = (src: string): Promise<HTMLImageElement> => {
 
 export const convertImage = async (
   imageSource: File | string,
-  options: ConversionOptions
+  options: ConversionOptions,
 ): Promise<Blob> => {
   try {
     let img: HTMLImageElement;
@@ -32,9 +32,7 @@ export const convertImage = async (
     canvas.height = img.height;
     const ctx = canvas.getContext("2d");
 
-    if (!ctx) {
-      throw new Error("Unable to get canvas context");
-    }
+    if (!ctx) throw new Error("Unable to get canvas context");
 
     ctx.drawImage(img, 0, 0);
 
@@ -42,7 +40,7 @@ export const convertImage = async (
 
     return new Promise<Blob>((resolve, reject) => {
       canvas.toBlob(
-        (blob) => {
+        blob => {
           if (blob) {
             resolve(blob);
           } else {
@@ -50,7 +48,7 @@ export const convertImage = async (
           }
         },
         mimeType,
-        options.quality
+        options.quality,
       );
     });
   } catch (error) {
@@ -62,7 +60,7 @@ export const convertImage = async (
 export const downloadBlob = (
   blob: Blob,
   filename: string,
-  format: ImageFormat
+  format: ImageFormat,
 ): void => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");

@@ -2,59 +2,132 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg-gradient-1: #222;
-  --bg-gradient-2: #444;
-  --bg-gradient-3: #000;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
-  --primary: #fff;
-  --secondary: #ccc;
-  --contrast: #000;
-  --accent: #212120;
-  --accent2: #575756;
-  --format: #092f45;
+:root {
+  /* base */
+  --bg-gradient-1: #131a2c;
+  --bg-gradient-2: #1c2542;
+  --bg-gradient-3: #131a2c;
+
+  --primary: #ffffff;
+  --secondary: #c9d6e7;
+  --contrast: #000000;
+  --accent: #1d2538;
+  --accent2: #2a334d;
+  --format: #4870e8;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+
+  /* brand */
+  --brand-100: #e0f2ff;
+  --brand-200: #b0d8ff;
+  --brand-300: #80bcff;
+  --brand-400: #4870e8;
+  --brand-500: #335de0;
+  --brand-600: #1a46d2;
+
+  /* status */
+  --success: #10b981;
+  --error: #ef4444;
+
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 .dark {
-  --bg-gradient-1: #222;
-  --bg-gradient-2: #444;
-  --bg-gradient-3: #000;
+  --bg-gradient-1: #131a2c;
+  --bg-gradient-2: #1c2542;
+  --bg-gradient-3: #131a2c;
 
-  --primary: #fff;
-  --secondary: #ccc;
-  --contrast: #000;
-  --accent: #212120;
-  --accent2: #575756;
-  --format: #092f45;
+  --primary: #ffffff;
+  --secondary: #c9d6e7;
+  --contrast: #000000;
+  --accent: #1d2538;
+  --accent2: #2a334d;
+  --format: #4870e8;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-hover: rgba(255, 255, 255, 0.08);
 }
 
 .light {
-  --bg-gradient-1: #ddd;
-  --bg-gradient-2: #ccc;
-  --bg-gradient-3: #fff;
+  --bg-gradient-1: #f8faff;
+  --bg-gradient-2: #eef4ff;
+  --bg-gradient-3: #f8faff;
 
-  --primary: #000;
-  --secondary: #444;
-  --contrast: #fff;
-  --accent: #dbdbd7;
-  --accent2: #f5f5f2;
-  --format: #53b5ed;
+  --primary: #1a1f36;
+  --secondary: #4e5d78;
+  --contrast: #ffffff;
+  --accent: #f0f4ff;
+  --accent2: #e5ecff;
+  --format: #3355cc;
+  --surface: rgba(0, 0, 0, 0.03);
+  --surface-hover: rgba(0, 0, 0, 0.05);
 }
 
 @layer components {
+  /* glass UI base */
+  .glass {
+    @apply backdrop-blur-sm bg-surface border border-white/10 shadow-glass;
+  }
+
+  .glass-hover {
+    @apply hover:bg-surface-hover transition-all duration-300;
+  }
+
+  /* input */
   .input-field {
-    @apply w-full rounded-md py-1 px-2 border-none shadow-none outline-none bg-accent transition-colors duration-300 text-primary;
+    @apply w-full rounded-xl py-3 px-4 bg-surface border border-white/10 shadow-inner-glow
+          text-primary text-sm placeholder:text-secondary placeholder-opacity-50
+          transition-all duration-300 focus:ring-2 focus:ring-[rgba(72,112,232,0.3)] focus:bg-surface-hover outline-none;
   }
 
-  .input-field:focus {
-    @apply bg-accent2 outline outline-1 outline-contrast -outline-offset-2;
-  }
-
+  /* format selector */
   .format-label {
-    @apply w-full text-center rounded-full font-bold transition-transform duration-500 transform-none text-sm cursor-pointer;
+    @apply w-full h-full flex items-center justify-center rounded-full
+          font-medium text-sm cursor-pointer transition-all duration-300
+          text-secondary hover:text-primary;
   }
 
   .format-radio:checked + .format-label {
-    @apply bg-format text-white shadow-md -translate-y-0.5;
+    @apply bg-format text-white shadow-elevation-2 scale-105;
+  }
+
+  /* button */
+  .btn {
+    @apply rounded-xl font-medium text-center transition-all duration-300
+           focus:outline-none focus:ring-2 focus:ring-[rgba(72,112,232,0.1)]
+
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-500 text-white hover:bg-brand-600
+           shadow-elevation-1 hover:shadow-elevation-2
+           active:shadow-inner active:scale-98;
+  }
+
+  .btn-secondary {
+    @apply btn bg-surface text-primary border border-white/10
+           hover:bg-surface-hover shadow-inner-glow;
+  }
+
+  /* card */
+  .card {
+    @apply rounded-2xl bg-surface border border-white/10 shadow-elevation-2 backdrop-blur-sm
+           overflow-hidden transition-all duration-300;
+  }
+
+  /* animation utilities */
+  .animate-stagger-1 {
+    animation-delay: 0.1s;
+  }
+  .animate-stagger-2 {
+    animation-delay: 0.2s;
+  }
+  .animate-stagger-3 {
+    animation-delay: 0.3s;
+  }
+  .animate-stagger-4 {
+    animation-delay: 0.4s;
   }
 }

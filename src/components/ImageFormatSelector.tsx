@@ -12,14 +12,10 @@ const ImageFormatSelector: React.FC<ImageFormatSelectorProps> = ({
   onFormatChange,
 }) => {
   return (
-    <div className="mb-4">
-      <label className="block text-primary mb-2">Image Type:</label>
-      <div className="relative w-full bg-accent2 h-8 flex justify-around items-center rounded-full">
-        {IMAGE_FORMATS.map((format) => (
-          <div
-            key={format.id}
-            className="relative flex-1 h-full flex justify-center items-center"
-          >
+    <div className="space-y-2">
+      <div className="relative w-full bg-accent/50 h-12 flex gap-2 rounded-2xl shadow-inner-glow overflow-hidden px-2">
+        {IMAGE_FORMATS.map(format => (
+          <div key={format.id} className="relative flex-1 h-full">
             <input
               type="radio"
               id={format.id}
@@ -28,11 +24,57 @@ const ImageFormatSelector: React.FC<ImageFormatSelectorProps> = ({
               checked={selectedFormat === format.id}
               onChange={() => onFormatChange(format.id)}
             />
-            <label htmlFor={format.id} className="format-label">
-              {format.label}
+            <label
+              htmlFor={format.id}
+              className={`format-label ${
+                selectedFormat === format.id ? "text-white" : ""
+              }`}
+            >
+              <div className="flex flex-col items-center justify-center">
+                <span className="text-xs font-medium">{format.label}</span>
+                {format.id === selectedFormat && (
+                  <span className="text-[0.58rem] opacity-75">
+                    {format.id === "png" && "Lossless"}
+                    {format.id === "jpg" && "Standard"}
+                    {format.id === "webp" && "Modern Web"}
+                    {format.id === "avif" && "Next-Gen"}
+                  </span>
+                )}
+              </div>
             </label>
+
+            {selectedFormat === format.id && (
+              <span className="absolute bottom-0 left-0 h-0.5 w-full bg-gradient-to-r from-brand-300 to-brand" />
+            )}
           </div>
         ))}
+      </div>
+
+      <div className="bg-surface rounded-lg p-3 text-xs text-secondary italic">
+        {selectedFormat === "png" && (
+          <p>
+            PNG provides high quality with transparency support. Best for
+            graphics and logos.
+          </p>
+        )}
+        {selectedFormat === "jpg" && (
+          <p>
+            JPG offers good quality with smaller file sizes. Ideal for
+            photographs and complex images.
+          </p>
+        )}
+        {selectedFormat === "webp" && (
+          <p>
+            WebP delivers excellent compression with transparency support.
+            Perfect for web use.
+          </p>
+        )}
+        {selectedFormat === "avif" && (
+          <p>
+            AVIF provides superior compression and quality. Best for modern
+            browsers and apps.
+          </p>
+        )}
       </div>
     </div>
   );
