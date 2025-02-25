@@ -81,7 +81,7 @@ const App: React.FC = () => {
               <p className="text-xs text-secondary italic absolute w-full transition-all duration-500 transform translate-y-0 group-hover:translate-y-[-200%]">
                 Unlimited Conversions
               </p>
-              <p className="text-xs text-brand-300 italic absolute w-full transition-all duration-500 transform translate-y-[100%] group-hover:translate-y-0">
+              <p className="text-xs text-brand-300 italic absolute w-full transition-all duration-500 transform translate-y-[200%] group-hover:translate-y-0">
                 For Free
               </p>
             </div>
