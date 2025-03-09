@@ -16,3 +16,5 @@ export interface ConversionResult {
 export interface UseImageConversionProps {
   onStatusChange: (status: string) => void;
 }
+
+export type ThemeType = "dark" | "light";

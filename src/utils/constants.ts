@@ -1,4 +1,5 @@
 import { ImageFormat } from "../types";
+import { Tab } from "../types/tabs.types";
 
 export const IMAGE_FORMATS: { id: ImageFormat; label: string }[] = [
   { id: "png", label: "PNG" },
