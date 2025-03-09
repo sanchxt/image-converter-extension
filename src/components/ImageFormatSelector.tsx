@@ -34,18 +34,15 @@ const ImageFormatSelector: React.FC<ImageFormatSelectorProps> = ({
                 <span className="text-xs font-medium">{format.label}</span>
                 {format.id === selectedFormat && (
                   <span className="text-[0.58rem] opacity-75">
-                    {format.id === "png" && "Lossless"}
-                    {format.id === "jpg" && "Standard"}
-                    {format.id === "webp" && "Modern Web"}
-                    {format.id === "avif" && "Next-Gen"}
+                    {format.id === "png"}
+                    {format.id === "jpg"}
+                    {format.id === "webp"}
+                    {format.id === "avif"}
+                    {format.id === "heic"}
                   </span>
                 )}
               </div>
             </label>
-
-            {selectedFormat === format.id && (
-              <span className="absolute bottom-0 left-0 h-0.5 w-full bg-gradient-to-r from-brand-300 to-brand" />
-            )}
           </div>
         ))}
       </div>
@@ -73,6 +70,12 @@ const ImageFormatSelector: React.FC<ImageFormatSelectorProps> = ({
           <p>
             AVIF provides superior compression and quality. Best for modern
             browsers and apps.
+          </p>
+        )}
+        {selectedFormat === "heic" && (
+          <p>
+            HEIC is Apple's format with excellent compression. Ideal for iPhone
+            photos.
           </p>
         )}
       </div>

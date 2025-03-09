@@ -5,6 +5,7 @@ export const IMAGE_FORMATS: { id: ImageFormat; label: string }[] = [
   { id: "jpg", label: "JPG" },
   { id: "webp", label: "WEBP" },
   { id: "avif", label: "AVIF" },
+  { id: "heic", label: "HEIC" },
 ];
 
 export const MIME_TYPES: Record<ImageFormat, string> = {
@@ -12,4 +13,15 @@ export const MIME_TYPES: Record<ImageFormat, string> = {
   jpg: "image/jpeg",
   webp: "image/webp",
   avif: "image/avif",
+  heic: "image/heic",
 };
+
+export const ACCEPTED_FILE_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+  "image/avif",
+  "image/heic",
+  ".heic",
+];

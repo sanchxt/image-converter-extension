@@ -20,6 +20,7 @@ const ImageDropzone: React.FC<ImageDropzoneProps> = ({ onFilesSelected }) => {
     onDrop,
     accept: {
       "image/*": [],
+      ".heic": [],
     },
     multiple: true,
     noClick: true,
@@ -120,11 +121,20 @@ const ImageDropzone: React.FC<ImageDropzoneProps> = ({ onFilesSelected }) => {
                   />
                 </svg>
                 <p className="truncate">{name}</p>
+                {name.toLowerCase().endsWith(".heic") && (
+                  <span className="bg-brand-400/20 text-brand-400 px-1.5 py-0.5 rounded-full text-[10px]">
+                    HEIC
+                  </span>
+                )}
               </div>
             ))}
           </div>
         </div>
       )}
+
+      <div className="text-xs text-center text-secondary">
+        Supported formats: PNG, JPG, WebP, AVIF, HEIC
+      </div>
     </div>
   );
 };
