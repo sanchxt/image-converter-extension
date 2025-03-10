@@ -1,35 +1,78 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 
+// hooks
 import { useTheme } from "./hooks/useTheme";
+import { useImageEdit } from "./hooks/useImageEdit";
 import { useImageConversion } from "./hooks/useImageConversion";
-import { ImageFormat, ImageSource } from "./types";
-import { TabId } from "./types/tabs.types";
-import Layout from "./components/Layout";
-import ImagePreview from "./components/ImagePreview";
-import TabContent from "./components/TabContent";
 
-const App: React.FC = () => {
+// types
+import { TabId } from "./types/tabs.types";
+import { ImageFormat, ImageSource } from "./types";
+
+// components
+import Layout from "./components/Layout";
+import TabContent from "./components/TabContent";
+import ImagePreview from "./components/ImagePreview";
+
+const App = () => {
   const [theme, toggleTheme] = useTheme();
   const [activeTab, setActiveTab] = useState<TabId>("convert");
 
-  // image state
+  // shared image state
   const [imageSource, setImageSource] = useState<ImageSource>("file");
   const [url, setUrl] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
   const [selectedFormat, setSelectedFormat] = useState<ImageFormat>("png");
   const [status, setStatus] = useState<string>("");
   const [activeImage, setActiveImage] = useState<File | string | null>(null);
+  const [progress, setProgress] = useState<number>(0);
 
   // conversion hook
-  const { convertAndDownload, isConverting, progress } = useImageConversion({
+  const { convertAndDownload, isConverting } = useImageConversion({
     onStatusChange: setStatus,
   });
+
+  // image editing hook
+  const {
+    adjustments,
+    setAdjustment,
+    resetAdjustment,
+    resetAllAdjustments,
+    previewUrl,
+    generatePreview,
+    applyEdits,
+    isProcessing,
+    hasChanges,
+  } = useImageEdit({
+    onStatusChange: setStatus,
+  });
+
+  // update progress for both operations
+  useEffect(() => {
+    if (isConverting || isProcessing) {
+      const interval = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 95) {
+            clearInterval(interval);
+            return prev;
+          }
+          return prev + 5;
+        });
+      }, 200);
+
+      return () => clearInterval(interval);
+    } else setProgress(0);
+  }, [isConverting, isProcessing]);
+
+  // generate preview when activeImage / adjustments change & we're in edit tab
+  useEffect(() => {
+    if (activeTab === "edit" && activeImage) generatePreview(activeImage);
+  }, [activeTab, activeImage, adjustments]);
 
   // handlers
   const handleSourceChange = (source: ImageSource) => {
     setImageSource(source);
     setStatus("");
-
     setActiveImage(null);
   };
 
@@ -41,11 +84,8 @@ const App: React.FC = () => {
     setFiles(selectedFiles);
     setStatus("");
 
-    if (selectedFiles.length > 0) {
-      setActiveImage(selectedFiles[0]);
-    } else {
-      setActiveImage(null);
-    }
+    if (selectedFiles.length > 0) setActiveImage(selectedFiles[0]);
+    else setActiveImage(null);
   };
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,11 +93,8 @@ const App: React.FC = () => {
     setUrl(newUrl);
     setStatus("");
 
-    if (newUrl) {
-      setActiveImage(newUrl);
-    } else {
-      setActiveImage(null);
-    }
+    if (newUrl) setActiveImage(newUrl);
+    else setActiveImage(null);
   };
 
   const handleConvert = async () => {
@@ -76,6 +113,19 @@ const App: React.FC = () => {
     }
   };
 
+  const handleApplyEdits = async () => {
+    if (!activeImage) {
+      setStatus("No image to edit");
+      return;
+    }
+    await applyEdits(activeImage, selectedFormat);
+  };
+
+  // reset adjustments when tab changes
+  useEffect(() => {
+    if (activeTab !== "edit") resetAllAdjustments();
+  }, [activeTab]);
+
   return (
     <Layout
       theme={theme}
@@ -88,11 +138,23 @@ const App: React.FC = () => {
           <h2 className="text-primary font-medium text-sm mb-2">
             Image Preview
           </h2>
-          <ImagePreview imageSource={activeImage} />
+          <ImagePreview
+            imageSource={
+              activeTab === "edit" && previewUrl ? previewUrl : activeImage
+            }
+            key={
+              activeTab === "edit" && previewUrl
+                ? previewUrl
+                : activeImage
+                ? "active-image"
+                : "no-image"
+            }
+          />
         </div>
 
         <TabContent
           activeTab={activeTab}
+          // convert tab props
           imageSource={imageSource}
           url={url}
           handleUrlChange={handleUrlChange}
@@ -105,6 +167,15 @@ const App: React.FC = () => {
           isConverting={isConverting}
           status={status}
           progress={progress}
+          // edit tab props
+          activeImage={activeImage}
+          adjustments={adjustments}
+          setAdjustment={setAdjustment}
+          resetAdjustment={resetAdjustment}
+          resetAllAdjustments={resetAllAdjustments}
+          applyEdits={handleApplyEdits}
+          isProcessing={isProcessing}
+          hasChanges={hasChanges}
         />
       </div>
     </Layout>

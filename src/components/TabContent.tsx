@@ -5,9 +5,26 @@ import ImageDropzone from "./ImageDropzone";
 import ImageFormatSelector from "./ImageFormatSelector";
 import ConvertButton from "./ConvertButton";
 import { ImageFormat, ImageSource } from "../types";
+import { ImageAdjustments } from "../utils/imageEditing";
+import EditTabContent from "./EditTabContent";
 
 interface TabContentProps {
   activeTab: TabId;
+}
+
+interface ConvertTabContentProps {
+  imageSource: ImageSource;
+  url: string;
+  handleUrlChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSourceChange: (source: ImageSource) => void;
+  files: File[];
+  onFilesSelected: (files: File[]) => void;
+  selectedFormat: ImageFormat;
+  handleFormatChange: (format: ImageFormat) => void;
+  handleConvert: () => void;
+  isConverting: boolean;
+  status: string;
+  progress: number;
 }
 
 const TabContent: React.FC<
@@ -24,6 +41,16 @@ const TabContent: React.FC<
     isConverting: boolean;
     status: string;
     progress: number;
+
+    // edit tab props
+    activeImage: File | string | null;
+    adjustments: ImageAdjustments;
+    setAdjustment: (property: keyof ImageAdjustments, value: number) => void;
+    resetAdjustment: (property: keyof ImageAdjustments) => void;
+    resetAllAdjustments: () => void;
+    applyEdits: () => void;
+    isProcessing: boolean;
+    hasChanges: boolean;
   }
 > = ({
   activeTab,
@@ -39,6 +66,16 @@ const TabContent: React.FC<
   isConverting,
   status,
   progress,
+
+  // edit tab props
+  activeImage,
+  adjustments,
+  setAdjustment,
+  resetAdjustment,
+  resetAllAdjustments,
+  applyEdits,
+  isProcessing,
+  hasChanges,
 }) => {
   // render content based on active tab
   switch (activeTab) {
@@ -60,7 +97,26 @@ const TabContent: React.FC<
         />
       );
     case "edit":
-      return <EditTabContent />;
+      return (
+        <EditTabContent
+          imageSource={activeImage}
+          adjustments={adjustments}
+          setAdjustment={setAdjustment}
+          resetAdjustment={resetAdjustment}
+          resetAllAdjustments={resetAllAdjustments}
+          applyEdits={applyEdits}
+          isProcessing={isProcessing}
+          hasChanges={hasChanges}
+          status={status}
+          progress={progress}
+          // image input props
+          inputSource={imageSource}
+          url={url}
+          handleUrlChange={handleUrlChange}
+          handleSourceChange={handleSourceChange}
+          onFilesSelected={onFilesSelected}
+        />
+      );
     case "crop":
       return <CropTabContent />;
     case "compress":
@@ -74,21 +130,8 @@ const TabContent: React.FC<
   }
 };
 
-// convert Tab Content
-const ConvertTabContent: React.FC<{
-  imageSource: ImageSource;
-  url: string;
-  handleUrlChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSourceChange: (source: ImageSource) => void;
-  files: File[];
-  onFilesSelected: (files: File[]) => void;
-  selectedFormat: ImageFormat;
-  handleFormatChange: (format: ImageFormat) => void;
-  handleConvert: () => void;
-  isConverting: boolean;
-  status: string;
-  progress: number;
-}> = ({
+// convert tab content
+const ConvertTabContent = ({
   imageSource,
   url,
   handleUrlChange,
@@ -101,7 +144,7 @@ const ConvertTabContent: React.FC<{
   isConverting,
   status,
   progress,
-}) => {
+}: ConvertTabContentProps) => {
   return (
     <div className="space-y-4">
       <div className="card p-5 space-y-5 animate-scale-in animate-stagger-1">
@@ -203,35 +246,6 @@ const ConvertTabContent: React.FC<{
 };
 
 // TODO: Implement components for other tabs
-
-const EditTabContent: React.FC = () => {
-  return (
-    <div className="flex flex-col items-center justify-center h-[300px] space-y-4">
-      <div className="p-4 rounded-full bg-surface">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-12 w-12 text-secondary"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-          />
-        </svg>
-      </div>
-      <h3 className="text-xl font-medium text-primary">
-        Edit Feature Coming Soon
-      </h3>
-      <p className="text-secondary text-center text-sm max-w-xs">
-        The image editing feature is under development. Check back soon!
-      </p>
-    </div>
-  );
-};
 
 const CropTabContent: React.FC = () => {
   return (
