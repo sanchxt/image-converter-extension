@@ -67,7 +67,7 @@ const App = () => {
   // generate preview when activeImage / adjustments change & we're in edit tab
   useEffect(() => {
     if (activeTab === "edit" && activeImage) generatePreview(activeImage);
-  }, [activeTab, activeImage, adjustments]);
+  }, [activeTab, activeImage, generatePreview]);
 
   // handlers
   const handleSourceChange = (source: ImageSource) => {
@@ -149,6 +149,7 @@ const App = () => {
                 ? "active-image"
                 : "no-image"
             }
+            isProcessing={isProcessing}
           />
         </div>
 

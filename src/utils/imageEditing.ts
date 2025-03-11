@@ -19,41 +19,63 @@ export const applyImageAdjustments = async (
   format: string = "png",
 ): Promise<Blob> => {
   try {
-    // load image
-    const imageUrl =
-      typeof imageSource === "string"
-        ? imageSource
-        : URL.createObjectURL(imageSource);
+    let img: HTMLImageElement;
 
-    const img = await loadImage(imageUrl);
-
-    if (typeof imageSource !== "string") {
-      URL.revokeObjectURL(imageUrl);
+    // Handle different source types
+    if (typeof imageSource === "string") {
+      // Source is a URL
+      try {
+        img = await loadImage(imageSource);
+      } catch (error) {
+        console.error("Failed to load image from URL:", error);
+        throw new Error("Could not load image from URL");
+      }
+    } else {
+      // Source is a File
+      try {
+        const objectUrl = URL.createObjectURL(imageSource);
+        try {
+          img = await loadImage(objectUrl);
+        } finally {
+          // Always clean up the object URL after loading or on error
+          URL.revokeObjectURL(objectUrl);
+        }
+      } catch (error) {
+        console.error("Failed to load image from file:", error);
+        throw new Error("Could not load image from file");
+      }
     }
 
+    // Create canvas and apply adjustments
     const canvas = document.createElement("canvas");
     canvas.width = img.width;
     canvas.height = img.height;
     const ctx = canvas.getContext("2d");
 
-    if (!ctx) throw new Error("failed to get canvas context");
+    if (!ctx) {
+      throw new Error("Failed to get canvas context");
+    }
 
+    // Draw the original image on the canvas
     ctx.drawImage(img, 0, 0);
 
-    if (
+    // Check if we need to apply adjustments
+    const needsAdjustment =
       adjustments.brightness !== DEFAULT_ADJUSTMENTS.brightness ||
       adjustments.contrast !== DEFAULT_ADJUSTMENTS.contrast ||
-      adjustments.saturation !== DEFAULT_ADJUSTMENTS.saturation
-    ) {
-      // get image data
+      adjustments.saturation !== DEFAULT_ADJUSTMENTS.saturation;
+
+    if (needsAdjustment) {
+      // Get image data
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imageData.data;
 
+      // Calculate adjustment values
       const brightness = adjustments.brightness / 100;
       const contrast = adjustments.contrast / 100;
       const saturation = adjustments.saturation / 100;
 
-      // apply adjustments to each pixel
+      // Apply pixel-by-pixel adjustments
       for (let i = 0; i < data.length; i += 4) {
         const r = data[i];
         const g = data[i + 1];
@@ -61,36 +83,36 @@ export const applyImageAdjustments = async (
 
         const [h, s, l] = rgbToHsl(r, g, b);
 
-        // apply saturation
+        // Apply saturation
         const newS = clamp(s * saturation, 0, 1);
 
-        // apply brightness and contrast
+        // Apply brightness
         let newL = l * brightness;
 
-        // apply contrast (centered at 0.5)
+        // Apply contrast (centered at 0.5)
         newL = (newL - 0.5) * contrast + 0.5;
         newL = clamp(newL, 0, 1);
 
         const [newR, newG, newB] = hslToRgb(h, newS, newL);
 
-        // update pixel data
+        // Update pixel data
         data[i] = newR;
         data[i + 1] = newG;
         data[i + 2] = newB;
       }
 
-      // put modified image data back
+      // Put modified data back to canvas
       ctx.putImageData(imageData, 0, 0);
     }
 
-    // canvas to blob
+    // Canvas to blob
     return new Promise<Blob>((resolve, reject) => {
       canvas.toBlob(
         blob => {
           if (blob) {
             resolve(blob);
           } else {
-            reject(new Error("failed to create image blob"));
+            reject(new Error("Failed to create image blob"));
           }
         },
         `image/${format}`,
@@ -98,7 +120,7 @@ export const applyImageAdjustments = async (
       );
     });
   } catch (error) {
-    console.error("error applying image adjustments:", error);
+    console.error("Error in applyImageAdjustments:", error);
     throw error;
   }
 };
