@@ -28,9 +28,6 @@ export const useImageEdit = ({ onStatusChange }: Props): UseImageEditReturn => {
   });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [originalPreviewUrl, setOriginalPreviewUrl] = useState<string | null>(
-    null,
-  );
   const [currentImageSource, setCurrentImageSource] = useState<
     File | string | null
   >(null);
@@ -38,89 +35,53 @@ export const useImageEdit = ({ onStatusChange }: Props): UseImageEditReturn => {
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const latestAdjustmentsRef = useRef(adjustments);
 
+  // update ref when adjustments change
   useEffect(() => {
     latestAdjustmentsRef.current = adjustments;
   }, [adjustments]);
 
-  // cleanup preview URL on mount
+  // cleanup URLs on unmount
   useEffect(() => {
     return () => {
-      if (previewUrl && previewUrl.startsWith("blob:"))
+      if (previewUrl && previewUrl.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrl);
-      if (originalPreviewUrl && originalPreviewUrl.startsWith("blob:"))
-        URL.revokeObjectURL(originalPreviewUrl);
+      }
     };
-  }, [previewUrl, originalPreviewUrl]);
+  }, [previewUrl]);
 
-  // set adjustment value
+  // refs for UI updates and preview generation
+  const uiDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const previewDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const [debouncedAdjustments, setDebouncedAdjustments] = useState(adjustments);
+
   const setAdjustment = useCallback(
     (property: keyof ImageAdjustments, value: number) => {
-      setAdjustments(prev => ({
-        ...prev,
-        [property]: value,
-      }));
-
-      // debounce rapid changes (avoid too many preview generations)
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
+      // update UI value debounce
+      if (uiDebounceRef.current) {
+        clearTimeout(uiDebounceRef.current);
       }
 
-      debounceTimerRef.current = setTimeout(() => {
-        if (currentImageSource) generatePreview(currentImageSource);
-      }, 100);
+      uiDebounceRef.current = setTimeout(() => {
+        setAdjustments(prev => ({
+          ...prev,
+          [property]: value,
+        }));
+      }, 16); // ~1 frame at 60fps
+
+      if (previewDebounceRef.current) {
+        clearTimeout(previewDebounceRef.current);
+      }
+
+      previewDebounceRef.current = setTimeout(() => {
+        setDebouncedAdjustments(prev => ({
+          ...prev,
+          [property]: value,
+        }));
+      }, 150); // debounce for preview generation
     },
-    [currentImageSource],
+    [],
   );
 
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
-
-  // reset a specific adjustment
-  const resetAdjustment = useCallback(
-    (property: keyof ImageAdjustments) => {
-      setAdjustments(prev => ({
-        ...prev,
-        [property]: DEFAULT_ADJUSTMENTS[property],
-      }));
-
-      // regenerate preview after reset
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-
-      debounceTimerRef.current = setTimeout(() => {
-        if (currentImageSource) generatePreview(currentImageSource);
-      }, 50);
-    },
-    [currentImageSource],
-  );
-
-  // reset all adjustments
-  const resetAllAdjustments = useCallback(() => {
-    setAdjustments({ ...DEFAULT_ADJUSTMENTS });
-
-    // regenerate preview after reset
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    debounceTimerRef.current = setTimeout(() => {
-      if (currentImageSource) generatePreview(currentImageSource);
-    }, 50);
-  }, [currentImageSource]);
-
-  // check if any value's different from default
-  const hasChanges = Object.entries(adjustments).some(
-    ([key, value]) =>
-      value !== DEFAULT_ADJUSTMENTS[key as keyof ImageAdjustments],
-  );
-
-  // generate preview
   const generatePreview = useCallback(
     async (imageSource: File | string) => {
       if (!imageSource) {
@@ -133,90 +94,94 @@ export const useImageEdit = ({ onStatusChange }: Props): UseImageEditReturn => {
       onStatusChange("Generating preview...");
 
       try {
-        let sourceToUse = imageSource;
+        let sourceUrl: string;
 
-        // keep reference to original image
-        if (
-          typeof imageSource === "string" &&
-          !imageSource.startsWith("blob:")
-        ) {
-          if (originalPreviewUrl !== imageSource) {
-            setOriginalPreviewUrl(imageSource);
-          }
-        } else if (imageSource instanceof File) {
-          try {
-            // only create a new object URL if one doesn't exist
-            if (!originalPreviewUrl) {
-              const fileUrl = URL.createObjectURL(imageSource);
-              setOriginalPreviewUrl(fileUrl);
-              sourceToUse = fileUrl;
-            } else {
-              sourceToUse = originalPreviewUrl;
-            }
-          } catch (err) {
-            throw new Error("Could not create preview from file");
-          }
+        if (typeof imageSource === "string") {
+          // for URLs, use them directly
+          sourceUrl = imageSource;
+        } else {
+          // for files, create object URL
+          sourceUrl = URL.createObjectURL(imageSource);
         }
 
-        // apply adjustments and get result as blob
+        // apply adjustments
         const adjustedBlob = await applyImageAdjustments(
-          sourceToUse,
+          sourceUrl,
           adjustments,
         );
 
-        // revoke previous preview URL if exists and it's not the original
-        if (previewUrl && previewUrl !== originalPreviewUrl) {
+        // clean up previous preview URL if it exists
+        if (previewUrl && previewUrl.startsWith("blob:")) {
           URL.revokeObjectURL(previewUrl);
         }
 
-        // create new URL for preview
+        // create new preview URL
         const newPreviewUrl = URL.createObjectURL(adjustedBlob);
-
-        //   verify blob url works before setting it
-        await testImageUrl(newPreviewUrl);
-
         setPreviewUrl(newPreviewUrl);
         onStatusChange("Preview updated");
+
+        // cleanup source URL if it was created from a File
+        if (typeof imageSource !== "string") {
+          URL.revokeObjectURL(sourceUrl);
+        }
       } catch (error) {
         console.error("Error generating preview:", error);
-
-        // if we failed but have an original image...show that
-        if (originalPreviewUrl) {
-          setPreviewUrl(originalPreviewUrl);
-          onStatusChange("Using original image (adjustment failed)");
-        } else {
-          onStatusChange(
-            `Error: ${
-              error instanceof Error
-                ? error.message
-                : "Failed to generate preview"
-            }`,
-          );
-        }
+        onStatusChange(
+          `Error: ${
+            error instanceof Error
+              ? error.message
+              : "Failed to generate preview"
+          }`,
+        );
       } finally {
         setIsProcessing(false);
       }
     },
-    [adjustments, originalPreviewUrl, previewUrl],
+    [adjustments, onStatusChange],
   );
 
-  // helper function to test if an image URL loads correctly
-  const testImageUrl = (url: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        console.log("Image loaded successfully:", url);
-        resolve();
-      };
-      img.onerror = e => {
-        console.error("Image failed to load:", url, e);
-        reject(new Error(`Failed to load image from URL: ${url}`));
-      };
-      img.src = url;
-    });
-  };
+  // trigger preview generation when debounced adjustments change
+  useEffect(() => {
+    if (currentImageSource) {
+      generatePreview(currentImageSource);
+    }
+  }, [debouncedAdjustments, currentImageSource, generatePreview]);
 
-  // apply edits & download
+  const resetAdjustment = useCallback(
+    (property: keyof ImageAdjustments) => {
+      setAdjustments(prev => ({
+        ...prev,
+        [property]: DEFAULT_ADJUSTMENTS[property],
+      }));
+
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      debounceTimerRef.current = setTimeout(() => {
+        if (currentImageSource) generatePreview(currentImageSource);
+      }, 50);
+    },
+    [currentImageSource],
+  );
+
+  const resetAllAdjustments = useCallback(() => {
+    setAdjustments({ ...DEFAULT_ADJUSTMENTS });
+
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      if (currentImageSource) generatePreview(currentImageSource);
+    }, 50);
+  }, [currentImageSource]);
+
+  const hasChanges = Object.entries(adjustments).some(
+    ([key, value]) =>
+      value !== DEFAULT_ADJUSTMENTS[key as keyof ImageAdjustments],
+  );
+
   const applyEdits = async (
     imageSource: File | string,
     format: string = "png",
@@ -230,17 +195,27 @@ export const useImageEdit = ({ onStatusChange }: Props): UseImageEditReturn => {
     onStatusChange("Applying edits...");
 
     try {
-      // use original source if available, otherwise use the provided source
-      const sourceToUse = originalPreviewUrl || imageSource;
+      let sourceUrl: string;
+
+      if (typeof imageSource === "string") {
+        sourceUrl = imageSource;
+      } else {
+        sourceUrl = URL.createObjectURL(imageSource);
+      }
 
       const adjustedBlob = await applyImageAdjustments(
-        sourceToUse,
+        sourceUrl,
         adjustments,
         format,
       );
 
       downloadEditedImage(adjustedBlob, imageSource);
       onStatusChange("Image edited and downloaded successfully.");
+
+      // cleanup source URL if it was created from a File
+      if (typeof imageSource !== "string") {
+        URL.revokeObjectURL(sourceUrl);
+      }
     } catch (error) {
       console.error("Error applying edits:", error);
       onStatusChange(
@@ -252,6 +227,21 @@ export const useImageEdit = ({ onStatusChange }: Props): UseImageEditReturn => {
       setIsProcessing(false);
     }
   };
+
+  // cleanup all timers on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      if (uiDebounceRef.current) {
+        clearTimeout(uiDebounceRef.current);
+      }
+      if (previewDebounceRef.current) {
+        clearTimeout(previewDebounceRef.current);
+      }
+    };
+  }, []);
 
   return {
     adjustments,
