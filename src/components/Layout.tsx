@@ -35,7 +35,7 @@ const Layout: React.FC<LayoutProps> = ({
               className="text-2xl font-bold text-primary pt-2 font-nunito animate-glow
                             bg-gradient-to-r from-brand-300 to-brand-500 bg-clip-text"
             >
-              Image Conveter
+              Image Converter
             </h1>
 
             <div className="relative overflow-hidden h-5 group">
