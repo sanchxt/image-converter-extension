@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Image Converter",
   "description": "The most elegant image converter with beautiful UI. Convert images to PNG, JPG, WebP, and AVIF formats in bulk with a single click.",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "permissions": [],
   "action": {
     "default_popup": "index.html",
