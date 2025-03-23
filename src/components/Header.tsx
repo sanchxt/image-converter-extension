@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = () => {
           <span className="font-bold text-primary text-base leading-tight">
             Image Converter
           </span>
-          <span className="text-secondary text-xs">v1.4.0</span>
+          <span className="text-secondary text-xs">v2.0.0</span>
         </div>
       </div>
     </header>

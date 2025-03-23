@@ -70,7 +70,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
       <div
         className={`flex flex-col items-center justify-center ${
           isFullscreen ? "h-full" : "h-64"
-        } bg-surface/50 rounded-xl border border-white/10`}
+        } bg-surface/50 rounded-xl border border-surface`}
       >
         <div className="p-4 rounded-full bg-surface/80">
           <svg
