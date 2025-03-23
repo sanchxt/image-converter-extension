@@ -1,4 +1,5 @@
 import { ImageFormat } from "../types";
+import { ImageAdjustments } from "./imageEditing";
 
 export const IMAGE_FORMATS: { id: ImageFormat; label: string }[] = [
   { id: "png", label: "PNG" },
@@ -25,3 +26,9 @@ export const ACCEPTED_FILE_TYPES = [
   "image/heic",
   ".heic",
 ];
+
+export const DEFAULT_ADJUSTMENTS: ImageAdjustments = {
+  brightness: 100,
+  contrast: 100,
+  saturation: 100,
+};

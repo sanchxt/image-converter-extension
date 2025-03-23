@@ -1,6 +1,6 @@
 {
   "name": "image-converter",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "The most elegant image converter with beautiful UI. Convert images to PNG, JPG, WebP, and AVIF formats in bulk with a single click.",
   "scripts": {
     "start": "webpack serve --mode development",
